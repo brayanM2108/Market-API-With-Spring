@@ -5,6 +5,7 @@ import com.brayan.market.domain.repository.ProductRepository;
 import com.brayan.market.persistence.crud.ProductoCrudRepository;
 import com.brayan.market.persistence.entity.Producto;
 import com.brayan.market.persistence.mapper.ProductMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,8 +14,15 @@ import java.util.Optional;
 @Repository
 public class ProductoRepository implements ProductRepository {
 
-    private ProductoCrudRepository productoCrudRepository;
-    private ProductMapper productMapper;
+    private final ProductoCrudRepository productoCrudRepository;
+
+    private final ProductMapper productMapper;
+
+    @Autowired
+    public ProductoRepository(ProductoCrudRepository productoCrudRepository, ProductMapper mapper){
+        this.productoCrudRepository = productoCrudRepository;
+        this.productMapper = mapper;
+    }
 
     @Override
     public List<Product> getAll() {
@@ -30,13 +38,13 @@ public class ProductoRepository implements ProductRepository {
 
     @Override
     public Optional<List<Product>> getScarseProducts(int quantity) {
-        Optional<List<Producto>> productos = productoCrudRepository.findByIdCantidadStockLessThanAndEstado(quantity, true);
-        return productos.map(prods -> productMapper.toProducts(prods));
+        Optional<List<Producto>> productos = productoCrudRepository.findByCantidadStockLessThanAndEstado(quantity, true);
+        return productos.map(productMapper::toProducts);
     }
 
     @Override
     public Optional<Product> getProduct(int productId) {
-        return productoCrudRepository.findById(productId).map(producto -> productMapper.toProduct(producto));
+        return productoCrudRepository.findById(productId).map(productMapper::toProduct);
     }
 
     @Override

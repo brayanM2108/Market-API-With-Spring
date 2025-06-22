@@ -15,7 +15,7 @@ public class Producto {
     @Getter @Setter
     private String nombre;
 
-    @Getter @Setter @Column(name = "ïd_categoria")
+    @Getter @Setter @Column(name = "id_categoria")
     private Integer idCategoria;
 
     @Getter @Setter @Column(name = "codigo_barras")
