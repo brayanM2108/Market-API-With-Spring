@@ -3,10 +3,12 @@ package com.brayan.market.web.controller;
 import com.brayan.market.domain.Product;
 import com.brayan.market.domain.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/products")
@@ -18,28 +20,35 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/all")
-    public List<Product> getAll(){
-        return productService.getAll();
+    @GetMapping
+    public ResponseEntity<List<Product>> getAll(){
+        return new ResponseEntity<>(productService.getAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/{productId}")
-    public Optional<Product> getProduct(@PathVariable("productId") int productId){
-        return  productService.getProduct(productId);
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable("id") int productId){
+        return ResponseEntity.of(productService.getProduct(productId));
     }
 
-    @GetMapping("/category/{categoryId}")
-    public Optional<List<Product>> getByCategory(@PathVariable("categoryId")  int categoryId){
-        return productService.getByCategory(categoryId);
+    @GetMapping("/category/{id}")
+    public ResponseEntity<List<Product>> getByCategory(@PathVariable("id")  int categoryId){
+        List<Product> products = productService.getByCategory(categoryId).orElse(null);
+
+        return products != null && !products.isEmpty() ?
+                new ResponseEntity<>(products, HttpStatus.OK)
+                :new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
 
     @PostMapping
-    public  Product save(@RequestBody Product product){
-        return productService.save(product);
+    public ResponseEntity<Product> save(@RequestBody Product product){
+        return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
-    public boolean delete(@PathVariable("id")  int productId){
-        return productService.delete(productId);
+    public ResponseEntity delete(@PathVariable("id")  int productId){
+        return new ResponseEntity(this.productService.delete(productId)
+                ? HttpStatus.OK
+                : HttpStatus.NOT_FOUND);
     }
 }

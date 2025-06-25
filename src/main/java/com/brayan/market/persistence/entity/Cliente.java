@@ -9,9 +9,8 @@ import java.util.List;
 @Table(name = "clientes")
 public class Cliente {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
-    private Integer id;
+    private String id;
 
     @Getter @Setter
     private String nombre;
@@ -20,7 +19,7 @@ public class Cliente {
     private String apellidos;
 
     @Getter @Setter
-    private String celular;
+    private long celular;
 
     @Getter @Setter
     private String direccion;

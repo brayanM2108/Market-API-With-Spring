@@ -37,7 +37,7 @@ public class Compra {
     @Getter @Setter
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "compra")
+    @OneToMany(mappedBy = "compra", cascade = {CascadeType.ALL})
     @Getter @Setter
     private List<ComprasProducto> productos;
 
